@@ -142,7 +142,7 @@ namespace tinyvtu {
 		std::int32_t connectivityOffset = 0;
 		for (auto i = 0ull; i < cells.size(); ++i) {
 			std::memcpy(&connectivity[static_cast<std::size_t>(connectivityOffset)], cells[i].data(),
-			            cells[i].size() * sizeof(std::size_t));
+			            cells[i].size() * sizeof(std::int32_t));
 			connectivityOffset += static_cast<std::int32_t>(cells[i].size());
 
 			offsets[i] = connectivityOffset;
