@@ -9,10 +9,9 @@ namespace tinyvtu::internal {
     public:
         GridData(std::uint64_t point_count, DataBlock &&points, std::uint64_t cell_count, DataBlock &&cell_connectivity,
                  DataBlock &&cell_offsets, DataBlock &&cell_types, compression::Info const &compression)
-            : point_count_(point_count), cell_count_(cell_count), points_(std::move(points)),
-              cell_connectivity_(std::move(cell_connectivity)), cell_offsets_(std::move(cell_offsets)),
-              cell_types_(std::move(cell_types)),
-              compression_(compression) {
+            : point_count_(point_count), cell_count_(cell_count), points_(points),
+              cell_connectivity_(cell_connectivity), cell_offsets_(cell_offsets),
+              cell_types_(cell_types), compression_(compression) {
         }
 
         template<bool is_cell_data, std::integral T>
