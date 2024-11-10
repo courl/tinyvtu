@@ -1,0 +1,50 @@
+name: Build, Test, and Install Verification
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up C++ Compiler
+        uses: actions/setup-cpp@v2
+        with:
+          compiler: gcc
+
+      - name: Install CMake
+        uses: jwlawson/actions-setup-cmake@v1
+        with:
+          cmake-version: '3.29.0'
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zlib1g-dev zlib1g
+
+      - name: Configure CMake
+        run: cmake -S . -B build
+
+      - name: Build with CMake
+        run: cmake --build build
+
+      - name: Run tests with CTest
+        run: ctest --test-dir build --output-on-failure
+
+      # Step 6: Install the library
+      - name: Install the library
+        run: cmake --install build --prefix /tmp/tinyvtu_install
+
+      # Step 7: Verify installation with find_package
+      - name: Verify with example project
+        run: |
+          mkdir examples_build
+          cd examples_build
+          cmake -DCMAKE_PREFIX_PATH=/tmp/tinyvtu_install ../examples
+          cmake --build .
+          ./example_tetra
