@@ -1,6 +1,6 @@
 #include "tinyvtu.hpp"
 
-#include <cstring>
+#include <ranges>
 
 #include "internal/GridData.hpp"
 
@@ -141,8 +141,7 @@ namespace tinyvtu {
 
 		std::int32_t connectivityOffset = 0;
 		for (auto i = 0ull; i < cells.size(); ++i) {
-			std::memcpy(&connectivity[static_cast<std::size_t>(connectivityOffset)], cells[i].data(),
-			            cells[i].size() * sizeof(std::int32_t));
+			std::ranges::copy(cells[i], connectivity.begin() + connectivityOffset);
 			connectivityOffset += static_cast<std::int32_t>(cells[i].size());
 
 			offsets[i] = connectivityOffset;

@@ -1,7 +1,7 @@
 # tinyvtu
 
 This library allows easy creation of [vtu files](https://docs.vtk.org/en/latest/design_documents/VTKFileFormats.html),
-i.e., unstructured grids. This format is especially useful to output simulations of two or three dimensional finite
+i.e., unstructured grids. This format is especially useful to output simulations of two- or three-dimensional finite
 element computations.
 
 ## Why another library?

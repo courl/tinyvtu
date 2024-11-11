@@ -35,7 +35,7 @@ namespace tinyvtu::internal {
 
 		const std::uint32_t compressedBlockSize = std::max((numberOfFullBlocks > 0) ? compressBound(blockSize) : 0,
 		                                                   compressBound(lastPartialBlockSize));
-		auto compressedBlock = std::vector<std::uint8_t>(compressedBlockSize, 0);
+		auto compressedBlock = std::vector<std::uint8_t>(compressedBlockSize);
 
 		Data prequel; // We write [#blocks][#u-size][#p-size][#c-size-1]...[#c-size-#blocks] in prequel
 		Data rawData; // We write [DATA] in rawData and later combine the two buffers
@@ -52,7 +52,7 @@ namespace tinyvtu::internal {
 			if (compress2(compressedBlock.data(), &destSize, &source[static_cast<std::size_t>(i) * blockSize],
 			              blockSize,
 			              compression.level) != Z_OK)
-				throw std::runtime_error("[tinyvtk::createBlockData] zlib could not compress data");
+				throw std::runtime_error("[tinyvtk::createBlockData] zlib compression failed for full block");
 
 			rawData.insert(rawData.end(), compressedBlock.data(), compressedBlock.data() + destSize);
 			// copy [#c-size-i]
@@ -64,7 +64,7 @@ namespace tinyvtu::internal {
 			if (compress2(compressedBlock.data(), &destSize,
 			              &source[static_cast<std::size_t>(numberOfFullBlocks * blockSize)], lastPartialBlockSize,
 			              compression.level) != Z_OK)
-				throw std::runtime_error("[tinyvtk::createBlockData] zlib could not compress data");
+				throw std::runtime_error("[tinyvtk::createBlockData] zlib compression failed for partial block");
 
 			rawData.insert(rawData.end(), compressedBlock.data(), compressedBlock.data() + destSize);
 			// copy [#c-size-i]
