@@ -9,6 +9,16 @@
 #include <fstream>
 
 namespace tinyvtu::internal {
+	/**
+	 * @class XMLWriter
+	 * @brief A utility class for generating XML content from data structures.
+	 *
+	 * The XMLWriter class provides methods to construct and write XML strings.
+	 * It supports creating elements, attributes, and handling nested hierarchies.
+	 *
+	 * Typical usage includes creating an instance of XMLWriter, adding elements,
+	 * setting attributes, and finally generating the XML string.
+	 */
 	class XMLWriter final {
 	public:
 		struct Attribute {
@@ -41,10 +51,9 @@ namespace tinyvtu::internal {
 		void writeDataBlock(const DataBlock &dataBlock, std::uint32_t offset);
 
 	private:
-		std::string indent() const;
+		[[nodiscard]] std::string indent() const;
 
 		std::ofstream file_;
 		std::stack<std::string> elements_;
 	};
 }
-

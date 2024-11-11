@@ -1,6 +1,6 @@
 #include "tinyvtu.hpp"
 
-#include <cstring>
+#include <ranges>
 
 #include "internal/GridData.hpp"
 
@@ -117,7 +117,11 @@ namespace tinyvtu {
 
 
 	UnstructuredGrid createGrid(const std::vector<std::array<float, 3> > &points, CellType cellType,
-	                            std::vector<std::vector<std::int32_t> > &cells, compression::Info compression) {
+	                            const std::vector<std::vector<std::int32_t> > &cells, compression::Info compression) {
+		if (points.size() > std::numeric_limits<std::uint32_t>::max() || cells.size() > std::numeric_limits<
+			    std::uint32_t>::max()) {
+			throw std::invalid_argument("Unsupported number of points or cells");
+		}
 		std::vector<float> pointsVector;
 		pointsVector.reserve(points.size() * 3);
 		for (const auto &point: points) {
@@ -141,8 +145,7 @@ namespace tinyvtu {
 
 		std::int32_t connectivityOffset = 0;
 		for (auto i = 0ull; i < cells.size(); ++i) {
-			std::memcpy(&connectivity[static_cast<std::size_t>(connectivityOffset)], cells[i].data(),
-			            cells[i].size() * sizeof(std::int32_t));
+			std::ranges::copy(cells[i], connectivity.begin() + connectivityOffset);
 			connectivityOffset += static_cast<std::int32_t>(cells[i].size());
 
 			offsets[i] = connectivityOffset;
@@ -155,8 +158,8 @@ namespace tinyvtu {
 		auto offsetsBlock = internal::createBlock("offsets", offsets, 0, compression);
 		auto typesBlock = internal::createBlock("types", types, 0, compression);
 		return UnstructuredGrid(std::make_unique<internal::GridData>(
-				points.size(), std::move(pointBlock), cellCount, std::move(connectivityBlock),
-				std::move(offsetsBlock), std::move(typesBlock), compression)
+				static_cast<std::uint32_t>(points.size()), std::move(pointBlock), cellCount,
+				std::move(connectivityBlock), std::move(offsetsBlock), std::move(typesBlock), compression)
 		);
 	}
 
