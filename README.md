@@ -8,7 +8,8 @@ simulations of two- or three-dimensional finite element computations.
 ## Table of Contents
 
 - [Why another library?](#why-another-library)
-- [Features](#design-goals)
+- [Design Goals](#design-goals)
+
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
@@ -42,7 +43,7 @@ Paraview.
 
 1. **Clone the Repository**
    ```sh
-   git clone https://github.com/yourusername/tinyvtu.git
+   git clone https://github.com/courl/tinyvtu.git
    cd tinyvtu
    ```
 
@@ -117,7 +118,8 @@ int main() {
 We welcome contributions to the TinyVTU project. If you have an idea for an enhancement or have found a bug, please open
 an issue or a pull request.
 
-### Steps to Contribute:
+### Steps to Contribute
+
 
 1. Fork the repository.
 2. Create a new branch: `git checkout -b feature-branch`

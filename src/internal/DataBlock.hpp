@@ -52,7 +52,8 @@ namespace tinyvtu::internal {
     template<typename T> requires NumericType<T>
     DataBlock createBlock(const std::string &name, const std::vector<T> &data, std::uint32_t number_of_components,
                           const compression::Info &compression) {
-        if (number_of_components != 0 and (data.size() % number_of_components != 0)) {
+        if (number_of_components != 0 && (data.size() % number_of_components != 0)) {
+
             throw std::invalid_argument("data size must be divisible by number_of_components");
         }
         const auto compressedData = compressData(reinterpret_cast<const std::uint8_t *>(data.data()),
