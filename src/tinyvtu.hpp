@@ -181,7 +181,7 @@ namespace tinyvtu {
 	 * @return An UnstructuredGrid object constructed from the provided data.
 	 */
 	UnstructuredGrid createGrid(const std::vector<std::array<float, 3> > &points, CellType cellType,
-	                            std::vector<std::vector<std::int32_t> > &cells,
+	                            const std::vector<std::vector<std::int32_t> > &cells,
 	                            compression::Info compression = compression::zlib);
 
 

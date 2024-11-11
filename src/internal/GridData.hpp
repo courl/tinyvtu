@@ -18,7 +18,7 @@ namespace tinyvtu::internal {
          * @param cell_types A DataBlock containing the types of the cells.
          * @param compression Compression settings to be applied on the grid data.
          */
-        GridData(std::uint64_t point_count, DataBlock &&points, std::uint64_t cell_count, DataBlock &&cell_connectivity,
+        GridData(std::uint32_t point_count, DataBlock &&points, std::uint32_t cell_count, DataBlock &&cell_connectivity,
                  DataBlock &&cell_offsets, DataBlock &&cell_types, compression::Info const &compression) noexcept
             : point_count_(point_count), cell_count_(cell_count), points_(std::move(points)),
               cell_connectivity_(std::move(cell_connectivity)), cell_offsets_(std::move(cell_offsets)),
