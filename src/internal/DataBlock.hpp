@@ -7,6 +7,8 @@
 namespace tinyvtu::internal {
     using Data = std::vector<std::uint8_t>;
 
+    template<typename T> concept NumericType = std::integral<T> || std::floating_point<T>;
+
     struct DataBlock {
         enum Type {
             Float32,
@@ -37,7 +39,7 @@ namespace tinyvtu::internal {
      */
     Data compressData(const std::uint8_t *source, std::uint64_t size, const compression::Info &compression);
 
-    template<std::integral T>
+    template<typename T> requires NumericType<T>
     DataBlock createBlock(const std::string &name, const std::vector<T> &data, std::uint32_t number_of_components,
                           const compression::Info &compression) {
         const auto compressedData = compressData(reinterpret_cast<const std::uint8_t *>(data.data()),
@@ -58,22 +60,12 @@ namespace tinyvtu::internal {
             return {DataBlock::UInt64, name, number_of_components, compressedData};
         else if constexpr (sizeof(T) == sizeof(std::uint64_t))
             return {DataBlock::Int64, name, number_of_components, compressedData};
-        else
-            static_assert(std::is_integral_v<T>, "Unsupported data type");
-        return {};
-    }
-
-    template<std::floating_point T>
-    DataBlock createBlock(const std::string &name, const std::vector<T> &data, std::uint32_t number_of_components,
-                          const compression::Info &compression) {
-        const auto compressedData = compressData(reinterpret_cast<const std::uint8_t *>(data.data()),
-                                                 data.size() * sizeof(T), compression);
-        if constexpr (sizeof(T) == sizeof(float))
+        else if constexpr (sizeof(T) == sizeof(float))
             return {DataBlock::Float32, name, number_of_components, compressedData};
         else if constexpr (sizeof(T) == sizeof(double))
             return {DataBlock::Float64, name, number_of_components, compressedData};
         else
-            static_assert(std::is_floating_point_v<T>, "Unsupported data type");
+            static_assert(std::is_integral_v<T>, "Unsupported data type");
         return {};
     }
 }

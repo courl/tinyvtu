@@ -49,10 +49,13 @@ namespace tinyvtu::internal {
 		std::memcpy(&prequel[2 * sizeof(std::uint32_t)], &lastPartialBlockSize, sizeof(std::uint32_t));
 		for (auto i = 0u; i < numberOfFullBlocks; ++i) {
 			uLongf destSize = compressedBlockSize;
-			if (compress2(compressedBlock.data(), &destSize, &source[static_cast<std::size_t>(i) * blockSize],
-			              blockSize,
-			              compression.level) != Z_OK)
-				throw std::runtime_error("[tinyvtk::createBlockData] zlib compression failed for full block");
+			const auto ret = compress2(compressedBlock.data(), &destSize,
+			                           &source[static_cast<std::size_t>(i) * blockSize],
+			                           blockSize,
+			                           compression.level);
+			if (ret != Z_OK)
+				throw std::runtime_error("[tinyvtk::createBlockData] zlib compression failed for full block "
+				                         + std::to_string(i) + " with error code " + std::to_string(ret));
 
 			rawData.insert(rawData.end(), compressedBlock.data(), compressedBlock.data() + destSize);
 			// copy [#c-size-i]
@@ -61,10 +64,14 @@ namespace tinyvtu::internal {
 		}
 		if (hasPartialBlock) {
 			uLongf destSize = compressedBlockSize;
-			if (compress2(compressedBlock.data(), &destSize,
-			              &source[static_cast<std::size_t>(numberOfFullBlocks * blockSize)], lastPartialBlockSize,
-			              compression.level) != Z_OK)
-				throw std::runtime_error("[tinyvtk::createBlockData] zlib compression failed for partial block");
+			const auto ret = compress2(compressedBlock.data(), &destSize,
+			                           &source[static_cast<std::size_t>(numberOfFullBlocks * blockSize)],
+			                           lastPartialBlockSize,
+			                           compression.level);
+			if (ret != Z_OK)
+				throw std::runtime_error("[tinyvtk::createBlockData] zlib compression failed for partial block of size "
+				                         + std::to_string(lastPartialBlockSize) + " with error code "
+				                         + std::to_string(ret));
 
 			rawData.insert(rawData.end(), compressedBlock.data(), compressedBlock.data() + destSize);
 			// copy [#c-size-i]

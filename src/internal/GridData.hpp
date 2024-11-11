@@ -29,31 +29,17 @@ namespace tinyvtu::internal {
          * Adds data to the grid, either as cell data or point data.
          *
          * @tparam is_cell_data Boolean indicating whether the data being added is for cells (true) or points (false).
-         * @tparam T Type of the data elements, which must be an integral type.
+         * @tparam T Type of the data elements, which must be an arithmetic type.
          * @param name The name associated with the data block.
          * @param data A vector containing the data elements.
          * @param number_of_components The number of components per data element.
          */
-        template<bool is_cell_data, std::integral T>
+        template<bool is_cell_data, typename T> requires NumericType<T>
         void addData(std::string const &name, std::vector<T> const &data, const std::uint32_t number_of_components) {
-            if constexpr (is_cell_data) {
-                cell_data_.emplace_back(createBlock(name, data, number_of_components, compression_));
-            } else {
-                point_data_.emplace_back(createBlock(name, data, number_of_components, compression_));
+            const auto expected_size = (is_cell_data ? cell_count_ : point_count_) * number_of_components;
+            if (data.size() != expected_size) {
+                throw std::invalid_argument("Data size mismatch");
             }
-        }
-
-        /**
-         * Adds data to the grid, either as cell data or point data.
-         *
-         * @tparam is_cell_data Boolean indicating whether the data being added is for cells (true) or points (false).
-         * @tparam T Type of the data elements, which must be an floating point type.
-         * @param name The name associated with the data block.
-         * @param data A vector containing the data elements.
-         * @param number_of_components The number of components per data element.
-         */
-        template<bool is_cell_data, std::floating_point T>
-        void addData(std::string const &name, std::vector<T> const &data, const std::uint32_t number_of_components) {
             if constexpr (is_cell_data) {
                 cell_data_.emplace_back(createBlock(name, data, number_of_components, compression_));
             } else {
