@@ -1,0 +1,29 @@
+﻿---
+BasedOnStyle: Google
+ColumnLimit: 120
+IndentWidth: 4
+CompactNamespaces: true
+IndentCaseLabels: false
+NamespaceIndentation: None
+UseTab: Never
+AccessModifierOffset: -4
+InsertNewlineAtEOF: true
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterCaseLabel: true
+  AfterClass: true
+  AfterControlStatement: Always
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: false
+  AfterStruct: true
+  AfterUnion: true
+  AfterExternBlock: false
+  BeforeCatch: true
+  BeforeElse: true
+  BeforeLambdaBody: true
+  BeforeWhile: true
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+RequiresClausePosition: WithPreceding
