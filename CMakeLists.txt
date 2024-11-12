@@ -76,6 +76,7 @@ if (${TINYVTU_WITH_TESTS})
     add_executable(tinyvtu_tests
             tests/test_datablock.cpp
             tests/test_grid_data.cpp
+            tests/test_tinyvtu.cpp
             tests/test_xml_writer.cpp
     )
 
