@@ -8,10 +8,12 @@ namespace {
 
 std::string getContents(const std::filesystem::path& path)
 {
-    const std::ifstream t(path);
-    std::stringstream buffer;
-    buffer << t.rdbuf();
-    return buffer.str();
+    std::ifstream file(path);
+    if (!file)
+    {
+        throw std::runtime_error("Failed to open file: " + path.string());
+    }
+    return {std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()};
 }
 
 }  // namespace
@@ -30,14 +32,13 @@ TEST_CASE("XMLWriter writes elements correctly", "[XMLWriter]")
         REQUIRE(getContents(file_path) == "<test>\n</test>\n");
         {
             XMLWriter writer(file_path);
-            writer.openXMLElement("test", {{.name = "attr1", .attribute = "123"}});
+            writer.openXMLElement("test", {{.name = "attr1", .value = "123"}});
             writer.endXMLElement();
         }
         REQUIRE(getContents(file_path) == "<test attr1=\"123\">\n</test>\n");
         {
             XMLWriter writer(file_path);
-            writer.openXMLElement("more",
-                                  {{.name = "attr1", .attribute = "123"}, {.name = "attr2", .attribute = "678"}});
+            writer.openXMLElement("more", {{.name = "attr1", .value = "123"}, {.name = "attr2", .value = "678"}});
             writer.endXMLElement();
         }
         REQUIRE(getContents(file_path) == "<more attr1=\"123\" attr2=\"678\">\n</more>\n");
@@ -60,7 +61,7 @@ TEST_CASE("XMLWriter writes elements correctly", "[XMLWriter]")
         {
             XMLWriter writer(file_path);
             writer.openXMLElement("element",
-                                  {{.name = "attr1", .attribute = "value1"}, {.name = "attr2", .attribute = "value2"}});
+                                  {{.name = "attr1", .value = "value1"}, {.name = "attr2", .value = "value2"}});
             writer.endXMLElement();
         }
         REQUIRE(getContents(file_path) == "<element attr1=\"value1\" attr2=\"value2\">\n</element>\n");
@@ -76,14 +77,13 @@ TEST_CASE("XMLWriter writes elements correctly", "[XMLWriter]")
 
         {
             XMLWriter writer(file_path);
-            writer.inlineXMLElement("inline", {{.name = "attr1", .attribute = "123"}});
+            writer.inlineXMLElement("inline", {{.name = "attr1", .value = "123"}});
         }
         REQUIRE(getContents(file_path) == "<inline attr1=\"123\"/>\n");
 
         {
             XMLWriter writer(file_path);
-            writer.inlineXMLElement("inline",
-                                    {{.name = "attr1", .attribute = "123"}, {.name = "attr2", .attribute = "678"}});
+            writer.inlineXMLElement("inline", {{.name = "attr1", .value = "123"}, {.name = "attr2", .value = "678"}});
         }
         REQUIRE(getContents(file_path) == "<inline attr1=\"123\" attr2=\"678\"/>\n");
     }

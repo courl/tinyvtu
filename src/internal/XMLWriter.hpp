@@ -45,7 +45,7 @@ public:
          * This member represents the value part of an attribute within an XML element.
          * It is used alongside the attribute name to form name/value pairs in XML structures.
          */
-        std::string attribute;
+        std::string value;
     };
 
     /**
