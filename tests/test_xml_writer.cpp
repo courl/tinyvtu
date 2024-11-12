@@ -16,9 +16,17 @@ std::string getContents(const std::filesystem::path& path)
     return {std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()};
 }
 
+class XMLWriterTest
+{
+protected:
+    const std::filesystem::path file_path{"test.xml"};
+
+    ~XMLWriterTest() { std::filesystem::remove(file_path); }
+};
+
 }  // namespace
 
-TEST_CASE("XMLWriter writes elements correctly", "[XMLWriter]")
+TEST_CASE_METHOD(XMLWriterTest, "XMLWriter writes elements correctly", "[XMLWriter]")
 {
     static const auto file_path = std::filesystem::path("test.xml");
 
