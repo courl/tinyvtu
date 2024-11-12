@@ -9,7 +9,7 @@ runs:
         compiler: gcc
 
     - name: Install CMake
-      uses: jwlawson/actions-setup-cmake@v1
+      uses: jwlawson/actions-setup-cmake@v2
       with:
         cmake-version: '3.29.0'
 
