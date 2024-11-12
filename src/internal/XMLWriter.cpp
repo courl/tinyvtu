@@ -32,7 +32,7 @@ void XMLWriter::endXMLElement()
 void XMLWriter::inlineXMLElement(const std::string &name, const std::vector<Attribute> &attributes)
 {
     file_ << indent() << "<" << name;
-    for (auto &attr : attributes) file_ << " " << attr.name << "=\"" << attr.attribute << "\"";
+    for (const auto &[name, attribute] : attributes) file_ << " " << name << "=\"" << attribute << "\"";
     file_ << "/>\n";
 }
 
