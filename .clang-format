@@ -1,5 +1,5 @@
-﻿---
-BasedOnStyle: Google
+﻿BasedOnStyle: Google
+LineEnding: LF
 ColumnLimit: 120
 IndentWidth: 4
 CompactNamespaces: true
