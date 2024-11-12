@@ -74,6 +74,8 @@ if (${TINYVTU_WITH_TESTS})
     FetchContent_MakeAvailable(Catch2)
 
     add_executable(tinyvtu_tests
+            tests/test_datablock.cpp
+            tests/test_grid_data.cpp
             tests/test_xml_writer.cpp
     )
 

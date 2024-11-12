@@ -64,25 +64,25 @@ DataBlock createBlock(const std::string &name, const std::vector<T> &data, std::
     }
     const auto compressedData =
         compressData(reinterpret_cast<const std::uint8_t *>(data.data()), data.size() * sizeof(T), compression);
-    if constexpr (sizeof(T) == sizeof(std::uint8_t) && std::is_unsigned_v<T>)
+    if constexpr (sizeof(T) == sizeof(std::uint8_t) && std::is_integral_v<T> && std::is_unsigned_v<T>)
         return {DataBlock::UInt8, name, number_of_components, compressedData};
-    else if constexpr (sizeof(T) == sizeof(std::uint8_t))
+    else if constexpr (sizeof(T) == sizeof(std::uint8_t) && std::is_integral_v<T>)
         return {DataBlock::Int8, name, number_of_components, compressedData};
-    else if constexpr (sizeof(T) == sizeof(std::uint16_t) && std::is_unsigned_v<T>)
+    else if constexpr (sizeof(T) == sizeof(std::uint16_t) && std::is_integral_v<T> && std::is_unsigned_v<T>)
         return {DataBlock::UInt16, name, number_of_components, compressedData};
-    else if constexpr (sizeof(T) == sizeof(std::uint16_t))
+    else if constexpr (sizeof(T) == sizeof(std::uint16_t) && std::is_integral_v<T>)
         return {DataBlock::Int16, name, number_of_components, compressedData};
-    else if constexpr (sizeof(T) == sizeof(std::uint32_t) && std::is_unsigned_v<T>)
+    else if constexpr (sizeof(T) == sizeof(std::uint32_t) && std::is_integral_v<T> && std::is_unsigned_v<T>)
         return {DataBlock::UInt32, name, number_of_components, compressedData};
-    else if constexpr (sizeof(T) == sizeof(std::uint32_t))
+    else if constexpr (sizeof(T) == sizeof(std::uint32_t) && std::is_integral_v<T>)
         return {DataBlock::Int32, name, number_of_components, compressedData};
     else if constexpr (sizeof(T) == sizeof(std::uint64_t) && std::is_unsigned_v<T>)
         return {DataBlock::UInt64, name, number_of_components, compressedData};
-    else if constexpr (sizeof(T) == sizeof(std::uint64_t))
+    else if constexpr (sizeof(T) == sizeof(std::uint64_t) && std::is_integral_v<T>)
         return {DataBlock::Int64, name, number_of_components, compressedData};
-    else if constexpr (sizeof(T) == sizeof(float))
+    else if constexpr (sizeof(T) == sizeof(float) && std::is_floating_point_v<T>)
         return {DataBlock::Float32, name, number_of_components, compressedData};
-    else if constexpr (sizeof(T) == sizeof(double))
+    else if constexpr (sizeof(T) == sizeof(double) && std::is_floating_point_v<T>)
         return {DataBlock::Float64, name, number_of_components, compressedData};
     else
         static_assert(!sizeof(T), "Unsupported data type");
