@@ -1,8 +1,11 @@
 cmake_minimum_required(VERSION 3.29)
-project(TinyVTU)
+
+set(TINYVTU_PROJECT_VERSION 0.0.1)
+set(TINYVTU_WITH_TESTS "Build tests" CACHE BOOL ON)
+
+project(TinyVTU VERSION ${TINYVTU_PROJECT_VERSION} LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
-set(PROJECT_VERSION 0.0.1)
 
 find_package(ZLIB REQUIRED)
 
@@ -60,9 +63,24 @@ install(FILES
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/TinyVTU
 )
 
-# Add a test executable
-add_executable(tetra
-        examples/example_tetra.cpp
-)
+# Add tests
+if (${TINYVTU_WITH_TESTS})
+    Include(FetchContent)
+    FetchContent_Declare(
+            Catch2
+            GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+            GIT_TAG v3.4.0
+    )
+    FetchContent_MakeAvailable(Catch2)
 
-target_link_libraries(tetra PRIVATE TinyVTU)
+    add_executable(tinyvtu_tests
+            tests/test_xml_writer.cpp
+    )
+
+    target_link_libraries(tinyvtu_tests PRIVATE TinyVTU Catch2::Catch2WithMain)
+    target_include_directories(tinyvtu_tests PRIVATE src)
+
+    include(CTest)
+    include(Catch)
+    catch_discover_tests(tinyvtu_tests)
+endif ()

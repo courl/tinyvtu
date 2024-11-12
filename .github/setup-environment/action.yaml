@@ -1,0 +1,22 @@
+name: "Setup Environment"
+description: "Sets up the environment with C++ compiler, CMake, and dependencies"
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up C++ Compiler
+      uses: aminya/setup-cpp@v1
+      with:
+        compiler: gcc
+
+    - name: Install CMake
+      uses: jwlawson/actions-setup-cmake@v1
+      with:
+        cmake-version: '3.29.0'
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y zlib1g-dev zlib1g

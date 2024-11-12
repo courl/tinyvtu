@@ -34,25 +34,25 @@ void GridData::write(const std::filesystem::path &file_path) const
         {
             std::uint32_t currentOffset = 0;
             writer.openXMLElement("Points");
-            writer.writeDataBlock(points_, currentOffset);
+            writer.writeDataArrayElement(points_, currentOffset);
             currentOffset += static_cast<std::uint32_t>(points_.block.size());
             writer.endXMLElement();
 
             writer.openXMLElement("Cells");
-            writer.writeDataBlock(cell_connectivity_, currentOffset);
+            writer.writeDataArrayElement(cell_connectivity_, currentOffset);
             currentOffset += static_cast<std::uint32_t>(cell_connectivity_.block.size());
 
-            writer.writeDataBlock(cell_offsets_, currentOffset);
+            writer.writeDataArrayElement(cell_offsets_, currentOffset);
             currentOffset += static_cast<std::uint32_t>(cell_offsets_.block.size());
 
-            writer.writeDataBlock(cell_types_, currentOffset);
+            writer.writeDataArrayElement(cell_types_, currentOffset);
             currentOffset += static_cast<std::uint32_t>(cell_types_.block.size());
             writer.endXMLElement();
 
             writer.openXMLElement("PointData");
             for (const auto &data : point_data_)
             {
-                writer.writeDataBlock(data, currentOffset);
+                writer.writeDataArrayElement(data, currentOffset);
                 currentOffset += static_cast<std::uint32_t>(data.block.size());
             }
             writer.endXMLElement();
@@ -60,7 +60,7 @@ void GridData::write(const std::filesystem::path &file_path) const
             writer.openXMLElement("CellData");
             for (const auto &data : cell_data_)
             {
-                writer.writeDataBlock(data, currentOffset);
+                writer.writeDataArrayElement(data, currentOffset);
                 currentOffset += static_cast<std::uint32_t>(data.block.size());
             }
             writer.endXMLElement();
