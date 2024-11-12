@@ -3,9 +3,6 @@ description: "Sets up the environment with C++ compiler, CMake, and dependencies
 runs:
   using: "composite"
   steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
     - name: Set up C++ Compiler
       uses: aminya/setup-cpp@v1
       with:
