@@ -1,4 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
+#include <cmath>
 
 #include "internal/DataBlock.hpp"
 #include "tinyvtu.hpp"
@@ -43,6 +44,19 @@ TEST_CASE("DataBlock creation with various numeric types", "[DataBlock]")
         REQUIRE(dataBlock.name == name);
         REQUIRE(dataBlock.number_of_components == numComponents);
         REQUIRE(dataBlock.block.size() == 4 /* block size is stored in 32 bit */ + data.size() * sizeof(std::int16_t));
+
+        REQUIRE(dataBlock.block[0] == data.size() * sizeof(std::int16_t));
+        REQUIRE(dataBlock.block[1] == 0);
+        REQUIRE(dataBlock.block[2] == 0);
+        REQUIRE(dataBlock.block[3] == 0);
+
+        // Verify actual data bytes
+        const std::uint8_t* dataPtr = dataBlock.block.data() + 4;
+        const auto* int16Ptr = reinterpret_cast<const std::int16_t*>(dataPtr);
+        for (std::size_t i = 0; i < data.size(); ++i)
+        {
+            REQUIRE(int16Ptr[i] == data[i]);
+        }
     }
 
     SECTION("Create DataBlock with Float32 type")
@@ -57,6 +71,27 @@ TEST_CASE("DataBlock creation with various numeric types", "[DataBlock]")
         REQUIRE(dataBlock.name == name);
         REQUIRE(dataBlock.number_of_components == numComponents);
         REQUIRE(dataBlock.block.size() == 4 /* block size is stored in 32 bit */ + data.size() * sizeof(float));
+    }
+    SECTION("Float32 special values")
+    {
+        std::vector<float> special_data = {std::numeric_limits<float>::infinity(),
+                                           -std::numeric_limits<float>::infinity(),
+                                           std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::min(),
+                                           std::numeric_limits<float>::max()};
+
+        DataBlock dataBlock = createBlock<float>("SpecialFloat32", special_data, 1, tinyvtu::compression::none);
+
+        // Verify data bytes
+        const std::uint8_t* dataPtr = dataBlock.block.data() + 4;
+        const auto* floatPtr = reinterpret_cast<const float*>(dataPtr);
+
+        REQUIRE(std::isinf(floatPtr[0]));
+        REQUIRE(floatPtr[0] > 0);
+        REQUIRE(std::isinf(floatPtr[1]));
+        REQUIRE(floatPtr[1] < 0);
+        REQUIRE(std::isnan(floatPtr[2]));
+        REQUIRE(floatPtr[3] == std::numeric_limits<float>::min());
+        REQUIRE(floatPtr[4] == std::numeric_limits<float>::max());
     }
 
     SECTION("Invalid number of components throws exception")

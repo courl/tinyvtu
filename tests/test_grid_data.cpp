@@ -1,4 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
+#include <fstream>
 
 #include "internal/DataBlock.hpp"
 #include "internal/GridData.hpp"
@@ -126,6 +127,32 @@ TEST_CASE("GridData write", "[GridData]")
         REQUIRE(std::filesystem::exists(file_path));
 
         // Clean up
+        std::filesystem::remove(file_path);
+    }
+    SECTION("Write GridData File Handling")
+    {
+        std::filesystem::path file_path = "test_grid_data.vtu";
+
+        // Test writing to existing file
+        {
+            std::ofstream dummy(file_path);
+            dummy.close();
+            REQUIRE_NOTHROW(grid_data.write(file_path));
+            std::filesystem::remove(file_path);
+        }
+
+        // Test invalid path (assuming write permissions)
+        std::filesystem::path invalid_path = "/nonexistent/directory/test.vtu";
+        REQUIRE_THROWS(grid_data.write(invalid_path));
+
+        // Test file content (basic validation)
+        grid_data.write(file_path);
+        std::ifstream file(file_path);
+        std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+        REQUIRE(content.find("<VTKFile") != std::string::npos);
+        REQUIRE(content.find("PointScalars") != std::string::npos);
+        REQUIRE(content.find("CellScalars") != std::string::npos);
+        file.close();
         std::filesystem::remove(file_path);
     }
 }

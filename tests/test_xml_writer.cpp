@@ -222,4 +222,21 @@ TEST_CASE_METHOD(XMLWriterTest, "XMLWriter writes elements correctly", "[XMLWrit
                 "<DataArray Name=\"uint64_block\" NumberOfComponents=\"2\" type=\"UInt64\" format=\"appended\" "
                 "offset=\"100\"/>\n");
     }
+    SECTION("Write data with various patterns")
+    {
+        // Binary data with null bytes
+        const auto binary_data = Data{0x00, 0x01, 0x02, 0x00, 0x03};
+
+        // Large data block
+        std::vector<char> large_data(1024 * 1024, 'X');
+        const auto large_data_block = Data(large_data.begin(), large_data.end());
+
+        // Data with repeating patterns
+        const auto pattern_data = Data{0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF};
+
+        XMLWriter writer(file_path);
+        writer.writeData(binary_data);
+        writer.writeData(large_data_block);
+        writer.writeData(pattern_data);
+    }
 }

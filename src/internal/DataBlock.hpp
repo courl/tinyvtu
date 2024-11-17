@@ -8,9 +8,6 @@
 namespace tinyvtu::internal {
 using Data = std::vector<std::uint8_t>;
 
-template <typename T>
-concept NumericType = std::integral<T> || std::floating_point<T>;
-
 struct DataBlock
 {
     enum Type
@@ -54,7 +51,7 @@ Data compressData(const std::uint8_t *source, std::uint64_t size, const compress
  * @throws std::invalid_argument if the data size is not divisible by the number of components
  */
 template <typename T>
-requires NumericType<T>
+requires std::is_arithmetic_v<T>
 DataBlock createBlock(const std::string &name, const std::vector<T> &data, std::uint32_t number_of_components,
                       const compression::Info &compression)
 {
@@ -76,7 +73,7 @@ DataBlock createBlock(const std::string &name, const std::vector<T> &data, std::
         return {DataBlock::UInt32, name, number_of_components, compressedData};
     else if constexpr (sizeof(T) == sizeof(std::uint32_t) && std::is_integral_v<T>)
         return {DataBlock::Int32, name, number_of_components, compressedData};
-    else if constexpr (sizeof(T) == sizeof(std::uint64_t) && std::is_unsigned_v<T>)
+    else if constexpr (sizeof(T) == sizeof(std::uint64_t) && std::is_integral_v<T> && std::is_unsigned_v<T>)
         return {DataBlock::UInt64, name, number_of_components, compressedData};
     else if constexpr (sizeof(T) == sizeof(std::uint64_t) && std::is_integral_v<T>)
         return {DataBlock::Int64, name, number_of_components, compressedData};
