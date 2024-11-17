@@ -48,7 +48,7 @@ void XMLWriter::writeData(const Data &content)
     file_.write(reinterpret_cast<const char *>(content.data()), static_cast<std::streamsize>(content.size()));
 }
 
-void XMLWriter::writeDataBlock(const DataBlock &dataBlock, std::uint32_t offset)
+void XMLWriter::writeDataArrayElement(const DataBlock &dataBlock, std::uint32_t offset)
 {
     constexpr char TypeToName[][10] = {"Float32", "Float64", "Int8",   "UInt8", "Int16",
                                        "UInt16",  "Int32",   "UInt32", "Int64", "UInt64"};

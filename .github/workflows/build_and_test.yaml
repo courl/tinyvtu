@@ -7,25 +7,27 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  formatting-check:
+    name: Formatting Check
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Set up C++ Compiler
-        uses: aminya/setup-cpp@v1
+      - name: Run clang-format style check for C/C++/Protobuf programs.
+        uses: jidicula/clang-format-action@v4.13.0
         with:
-          compiler: gcc
+          clang-format-version: '16'
+          check-path: '.'
 
-      - name: Install CMake
-        uses: jwlawson/actions-setup-cmake@v1
-        with:
-          cmake-version: '3.29.0'
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y zlib1g-dev zlib1g
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
 
       - name: Configure CMake
         run: cmake -S . -B build
@@ -36,15 +38,40 @@ jobs:
       - name: Run tests with CTest
         run: ctest --test-dir build --output-on-failure
 
-      # Step 6: Install the library
+  build_and_install:
+    needs: build_and_test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
+
+      - name: Configure CMake
+        run: cmake -S . -B build -DTINYVTU_WITH_TESTS=OFF
+
+      - name: Build with CMake
+        run: cmake --build build
+
       - name: Install the library
         run: cmake --install build --prefix /tmp/tinyvtu_install
 
-      # Step 7: Verify installation with find_package
-      - name: Verify with example project
+      - name: Verify building example project
         run: |
           mkdir examples_build
           cd examples_build
           cmake -DCMAKE_PREFIX_PATH=/tmp/tinyvtu_install ../examples
           cmake --build .
-          ./example_tetra
+
+      - name: Verify running example project
+        working-directory: examples_build
+        run: |
+          if [ ! -f "./example_tetra" ]; then
+            echo "Example binary not found"
+            exit 1
+          fi
+          ./example_tetra || {
+            echo "Example execution failed"
+            exit 1
+          }

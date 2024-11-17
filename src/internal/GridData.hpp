@@ -40,7 +40,7 @@ public:
      * @param number_of_components The number of components per data element.
      */
     template <bool is_cell_data, typename T>
-    requires NumericType<T>
+    requires std::is_arithmetic_v<T>
     void addData(std::string const &name, std::vector<T> const &data, const std::uint32_t number_of_components)
     {
         const auto expected_size = (is_cell_data ? cell_count_ : point_count_) * number_of_components;
