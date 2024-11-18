@@ -30,7 +30,7 @@ jobs:
         uses: ./.github/actions/setup-environment
 
       - name: Configure CMake
-        run: cmake -S . -B build
+        run: cmake -S . -B build -DTINYVTU_WITH_TESTS=ON
 
       - name: Build with CMake
         run: cmake --build build
