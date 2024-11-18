@@ -9,125 +9,59 @@ UnstructuredGrid::UnstructuredGrid(std::unique_ptr<internal::GridData> &&gridDat
 
 UnstructuredGrid::~UnstructuredGrid() = default;
 
-void UnstructuredGrid::addPointData(const std::string &name, const std::vector<float> &pointData,
+template <class T>
+requires std::is_arithmetic_v<T>
+void UnstructuredGrid::addPointData(const std::string &name, const std::vector<T> &pointData,
                                     std::uint32_t numberOfComponents)
 {
-    grid_data_->addData<false>(name, pointData, numberOfComponents);
+    grid_data_->addData<false, T>(name, pointData, numberOfComponents);
 }
 
-void UnstructuredGrid::addPointData(const std::string &name, const std::vector<double> &pointData,
-                                    std::uint32_t numberOfComponents)
-{
-    grid_data_->addData<false>(name, pointData, numberOfComponents);
-}
-
-void UnstructuredGrid::addPointData(const std::string &name, const std::vector<std::int8_t> &pointData,
-                                    std::uint32_t numberOfComponents)
-{
-    grid_data_->addData<false>(name, pointData, numberOfComponents);
-}
-
-void UnstructuredGrid::addPointData(const std::string &name, const std::vector<std::uint8_t> &pointData,
-                                    std::uint32_t numberOfComponents)
-{
-    grid_data_->addData<false>(name, pointData, numberOfComponents);
-}
-
-void UnstructuredGrid::addPointData(const std::string &name, const std::vector<std::int16_t> &pointData,
-                                    std::uint32_t numberOfComponents)
-{
-    grid_data_->addData<false>(name, pointData, numberOfComponents);
-}
-
-void UnstructuredGrid::addPointData(const std::string &name, const std::vector<std::uint16_t> &pointData,
-                                    std::uint32_t numberOfComponents)
-{
-    grid_data_->addData<false>(name, pointData, numberOfComponents);
-}
-
-void UnstructuredGrid::addPointData(const std::string &name, const std::vector<std::int32_t> &pointData,
-                                    std::uint32_t numberOfComponents)
-{
-    grid_data_->addData<false>(name, pointData, numberOfComponents);
-}
-
-void UnstructuredGrid::addPointData(const std::string &name, const std::vector<std::uint32_t> &pointData,
-                                    std::uint32_t numberOfComponents)
-{
-    grid_data_->addData<false>(name, pointData, numberOfComponents);
-}
-
-void UnstructuredGrid::addPointData(const std::string &name, const std::vector<std::int64_t> &pointData,
-                                    std::uint32_t numberOfComponents)
-{
-    grid_data_->addData<false>(name, pointData, numberOfComponents);
-}
-
-void UnstructuredGrid::addPointData(const std::string &name, const std::vector<std::uint64_t> &pointData,
-                                    std::uint32_t numberOfComponents)
-{
-    grid_data_->addData<false>(name, pointData, numberOfComponents);
-}
-
-void UnstructuredGrid::addCellData(const std::string &name, const std::vector<float> &cellData,
+template <class T>
+requires std::is_arithmetic_v<T>
+void UnstructuredGrid::addCellData(const std::string &name, const std::vector<T> &pointData,
                                    std::uint32_t numberOfComponents)
 {
-    grid_data_->addData<true>(name, cellData, numberOfComponents);
+    grid_data_->addData<true, T>(name, pointData, numberOfComponents);
 }
 
-void UnstructuredGrid::addCellData(const std::string &name, const std::vector<double> &cellData,
-                                   std::uint32_t numberOfComponents)
-{
-    grid_data_->addData<true>(name, cellData, numberOfComponents);
-}
+template void UnstructuredGrid::addPointData<float>(const std::string &, const std::vector<float> &, std::uint32_t);
+template void UnstructuredGrid::addPointData<double>(const std::string &, const std::vector<double> &, std::uint32_t);
+template void UnstructuredGrid::addPointData<std::uint8_t>(const std::string &, const std::vector<std::uint8_t> &,
+                                                           std::uint32_t);
+template void UnstructuredGrid::addPointData<std::int8_t>(const std::string &, const std::vector<std::int8_t> &,
+                                                          std::uint32_t);
+template void UnstructuredGrid::addPointData<std::uint16_t>(const std::string &, const std::vector<std::uint16_t> &,
+                                                            std::uint32_t);
+template void UnstructuredGrid::addPointData<std::int16_t>(const std::string &, const std::vector<std::int16_t> &,
+                                                           std::uint32_t);
+template void UnstructuredGrid::addPointData<std::uint32_t>(const std::string &, const std::vector<std::uint32_t> &,
+                                                            std::uint32_t);
+template void UnstructuredGrid::addPointData<std::int32_t>(const std::string &, const std::vector<std::int32_t> &,
+                                                           std::uint32_t);
+template void UnstructuredGrid::addPointData<std::uint64_t>(const std::string &, const std::vector<std::uint64_t> &,
+                                                            std::uint32_t);
+template void UnstructuredGrid::addPointData<std::int64_t>(const std::string &, const std::vector<std::int64_t> &,
+                                                           std::uint32_t);
 
-void UnstructuredGrid::addCellData(const std::string &name, const std::vector<std::int8_t> &cellData,
-                                   std::uint32_t numberOfComponents)
-{
-    grid_data_->addData<true>(name, cellData, numberOfComponents);
-}
-
-void UnstructuredGrid::addCellData(const std::string &name, const std::vector<std::uint8_t> &cellData,
-                                   std::uint32_t numberOfComponents)
-{
-    grid_data_->addData<true>(name, cellData, numberOfComponents);
-}
-
-void UnstructuredGrid::addCellData(const std::string &name, const std::vector<std::int16_t> &cellData,
-                                   std::uint32_t numberOfComponents)
-{
-    grid_data_->addData<true>(name, cellData, numberOfComponents);
-}
-
-void UnstructuredGrid::addCellData(const std::string &name, const std::vector<std::uint16_t> &cellData,
-                                   std::uint32_t numberOfComponents)
-{
-    grid_data_->addData<true>(name, cellData, numberOfComponents);
-}
-
-void UnstructuredGrid::addCellData(const std::string &name, const std::vector<std::int32_t> &cellData,
-                                   std::uint32_t numberOfComponents)
-{
-    grid_data_->addData<true>(name, cellData, numberOfComponents);
-}
-
-void UnstructuredGrid::addCellData(const std::string &name, const std::vector<std::uint32_t> &cellData,
-                                   std::uint32_t numberOfComponents)
-{
-    grid_data_->addData<true>(name, cellData, numberOfComponents);
-}
-
-void UnstructuredGrid::addCellData(const std::string &name, const std::vector<std::int64_t> &cellData,
-                                   std::uint32_t numberOfComponents)
-{
-    grid_data_->addData<true>(name, cellData, numberOfComponents);
-}
-
-void UnstructuredGrid::addCellData(const std::string &name, const std::vector<std::uint64_t> &cellData,
-                                   std::uint32_t numberOfComponents)
-{
-    grid_data_->addData<true>(name, cellData, numberOfComponents);
-}
+template void UnstructuredGrid::addCellData<float>(const std::string &, const std::vector<float> &, std::uint32_t);
+template void UnstructuredGrid::addCellData<double>(const std::string &, const std::vector<double> &, std::uint32_t);
+template void UnstructuredGrid::addCellData<std::uint8_t>(const std::string &, const std::vector<std::uint8_t> &,
+                                                          std::uint32_t);
+template void UnstructuredGrid::addCellData<std::int8_t>(const std::string &, const std::vector<std::int8_t> &,
+                                                         std::uint32_t);
+template void UnstructuredGrid::addCellData<std::uint16_t>(const std::string &, const std::vector<std::uint16_t> &,
+                                                           std::uint32_t);
+template void UnstructuredGrid::addCellData<std::int16_t>(const std::string &, const std::vector<std::int16_t> &,
+                                                          std::uint32_t);
+template void UnstructuredGrid::addCellData<std::uint32_t>(const std::string &, const std::vector<std::uint32_t> &,
+                                                           std::uint32_t);
+template void UnstructuredGrid::addCellData<std::int32_t>(const std::string &, const std::vector<std::int32_t> &,
+                                                          std::uint32_t);
+template void UnstructuredGrid::addCellData<std::uint64_t>(const std::string &, const std::vector<std::uint64_t> &,
+                                                           std::uint32_t);
+template void UnstructuredGrid::addCellData<std::int64_t>(const std::string &, const std::vector<std::int64_t> &,
+                                                          std::uint32_t);
 
 void UnstructuredGrid::write(const std::filesystem::path &file_path) const { grid_data_->write(file_path); }
 
