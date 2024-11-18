@@ -96,68 +96,52 @@ enum class CellType : std::uint8_t
 class UnstructuredGrid final
 {
 public:
+    /**
+     * @brief Constructs an UnstructuredGrid object.
+     *
+     * Initializes the UnstructuredGrid with the provided grid data, transferring ownership of the data. Use
+     * `createGrid` instead of calling it directly
+     *
+     * @param gridData A unique pointer to the internal GridData object containing the grid's data.
+     *                 The ownership of gridData is moved to the constructed UnstructuredGrid object.
+     */
     explicit UnstructuredGrid(std::unique_ptr<internal::GridData> &&gridData);
 
+    /**
+     * @brief Destructor for the UnstructuredGrid class.
+     *
+     * Cleans up any resources associated with the UnstructuredGrid object.
+     */
     ~UnstructuredGrid();
 
-    void addPointData(const std::string &name, const std::vector<float> &pointData,
-                      std::uint32_t numberOfComponents = 1);
+    /**
+     * @brief Adds point data to the unstructured grid.
+     *
+     * This method allows adding point-associated data to the unstructured grid. The data is specified
+     * by its name, the actual data points, and the number of components per point.
+     *
+     * @param name The name of the point data.
+     * @param pointData A vector containing the data points.
+     * @param numberOfComponents The number of components for each point.
+     */
+    template <class T>
+    requires std::is_arithmetic_v<T>
+    void addPointData(const std::string &name, const std::vector<T> &pointData, std::uint32_t numberOfComponents = 1);
 
-    void addPointData(const std::string &name, const std::vector<double> &pointData,
-                      std::uint32_t numberOfComponents = 1);
-
-    void addPointData(const std::string &name, const std::vector<std::int8_t> &pointData,
-                      std::uint32_t numberOfComponents = 1);
-
-    void addPointData(const std::string &name, const std::vector<std::uint8_t> &pointData,
-                      std::uint32_t numberOfComponents = 1);
-
-    void addPointData(const std::string &name, const std::vector<std::int16_t> &pointData,
-                      std::uint32_t numberOfComponents = 1);
-
-    void addPointData(const std::string &name, const std::vector<std::uint16_t> &pointData,
-                      std::uint32_t numberOfComponents = 1);
-
-    void addPointData(const std::string &name, const std::vector<std::int32_t> &pointData,
-                      std::uint32_t numberOfComponents = 1);
-
-    void addPointData(const std::string &name, const std::vector<std::uint32_t> &pointData,
-                      std::uint32_t numberOfComponents = 1);
-
-    void addPointData(const std::string &name, const std::vector<std::int64_t> &pointData,
-                      std::uint32_t numberOfComponents = 1);
-
-    void addPointData(const std::string &name, const std::vector<std::uint64_t> &pointData,
-                      std::uint32_t numberOfComponents = 1);
-
-    void addCellData(const std::string &name, const std::vector<float> &cellData, std::uint32_t numberOfComponents = 1);
-
-    void addCellData(const std::string &name, const std::vector<double> &cellData,
-                     std::uint32_t numberOfComponents = 1);
-
-    void addCellData(const std::string &name, const std::vector<std::int8_t> &cellData,
-                     std::uint32_t numberOfComponents = 1);
-
-    void addCellData(const std::string &name, const std::vector<std::uint8_t> &cellData,
-                     std::uint32_t numberOfComponents = 1);
-
-    void addCellData(const std::string &name, const std::vector<std::int16_t> &cellData,
-                     std::uint32_t numberOfComponents = 1);
-
-    void addCellData(const std::string &name, const std::vector<std::uint16_t> &cellData,
-                     std::uint32_t numberOfComponents = 1);
-
-    void addCellData(const std::string &name, const std::vector<std::int32_t> &cellData,
-                     std::uint32_t numberOfComponents = 1);
-
-    void addCellData(const std::string &name, const std::vector<std::uint32_t> &cellData,
-                     std::uint32_t numberOfComponents = 1);
-
-    void addCellData(const std::string &name, const std::vector<std::int64_t> &cellData,
-                     std::uint32_t numberOfComponents = 1);
-
-    void addCellData(const std::string &name, const std::vector<std::uint64_t> &cellData,
-                     std::uint32_t numberOfComponents = 1);
+    /**
+     * @brief Adds cell data to the unstructured grid.
+     *
+     * This method allows adding data associated with the cells of the unstructured grid.
+     * The data should be passed as a vector and the type of the data should be an arithmetic type.
+     *
+     * @tparam T The type of the data, must be an arithmetic type.
+     * @param name The name associated with the cell data.
+     * @param cellData A vector containing the cell data values.
+     * @param numberOfComponents The number of components each cell data point has.
+     */
+    template <class T>
+    requires std::is_arithmetic_v<T>
+    void addCellData(const std::string &name, const std::vector<T> &cellData, std::uint32_t numberOfComponents = 1);
 
     /**
      * @brief Writes the unstructured grid to a file.
